@@ -1,0 +1,14 @@
+body{
+    background-color: #0C0C0D;
+    text-align: center;
+    color: white;
+    font: 35px courier, sans-serif;
+}
+
+#gjetteFelt {
+    color: darkcyan;
+}
+
+#feilBokstaver {
+    color: maroon;
+}

@@ -1,0 +1,112 @@
+<html>
+  <head>
+    <title>Hangman</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="assets/styles_hangman.css" />
+  </head>
+  <body>
+    <br />
+    <div id="livIgjen">
+      Du har 6 liv igjen!
+    </div>
+    <br />
+    <div id="gjetteFelt"></div>
+    <br />
+    <div id="feilBokstaver"></div>
+    <script>
+      // Variabel som holder på det rette svaret
+      var svar = null;
+      // Variabel for tegning av gjettefelt
+      var gjetteFelt = null;
+      // Variabler for å telle antall liv igjen
+      var livIgjen = 0;
+      var bokstavFeil = "";
+      document.onkeypress = function(evt) {
+        evt = evt || window.event;
+        var charCode = evt.keyCode || evt.which;
+        var charStr = String.fromCharCode(charCode).toUpperCase();
+        gjett(charStr);
+      };
+      // Funksjon som kjører når bruker klikker "gjett"
+      function gjett(input) {
+        let found = false;
+        for (let i = 0; i < svar.length; ++i) {
+          if (svar.charAt(i) == input) {
+            gjetteFelt.splice(i, 1, input);
+            document.getElementById("gjetteFelt").innerHTML = gjetteFelt.join(
+              " "
+            );
+            found = true;
+            if (gjetteFelt.filter(v => v === "_").length == 0) {
+              alert(
+                "Gratulerer! " +
+                  svar +
+                  " er korrekt ord! Du har vunnet spillet! Klikk 'OK' for å starte en ny runde! :)"
+              );
+              document.location.reload();
+            }
+          }
+        }
+        if (!found) {
+          if (bokstavFeil.includes(input)) return false;
+          else if (livIgjen > 1) {
+            bokstavFeil += input;
+            livIgjen--;
+            document.getElementById("livIgjen").innerHTML =
+              "Du har " + livIgjen + " liv igjen!";
+            document.getElementById("feilBokstaver").innerHTML += " " + input;
+          } else {
+            document.getElementById("feilBokstaver").innerHTML += " " + input;
+            document.getElementById("livIgjen").innerHTML =
+              "Du har ingen liv igjen!";
+            alert(
+              "Du er tom for liv! Du har tapt! Klikk 'OK' for å prøve igjen."
+            );
+            document.location.reload();
+          }
+        }
+      }
+      // Oppretter array for ordet som skal gjettes og tegner gjettefelt
+      function hentGjetteFelt() {
+        gjetteFelt = new Array(svar.length);
+        gjetteFelt.fill("_");
+        for (i = 0; i < gjetteFelt.length; i++) {
+          document.getElementById("gjetteFelt").innerHTML += " _ ";
+        }
+        return gjetteFelt;
+      }
+      function init() {
+        // Ordlisten spillet velger ord fra
+        var ordListe = [
+          "UNDERSTANDING",
+          "COMMITTMENT",
+          "FISKEBOLLER",
+          "ADOBO",
+          "BANANA",
+          "JUICE",
+          "SPRINGROLL",
+          "POTATO",
+          "HAPPYFUNTIME"
+        ];
+        // Velger hvilket ord som skal spilles
+        var tilfeldig = Math.floor(Math.random() * ordListe.length);
+        svar = ordListe[tilfeldig];
+        gjetteFelt = hentGjetteFelt();
+        // Setter antall forsøk basert på antall bokstaver i ordet
+        if (svar.length <= 4) {
+          livIgjen = 5;
+        } else if (svar.length <= 7) {
+          livIgjen = 6;
+        } else if (svar.length <= 10) {
+          livIgjen = 7;
+        } else {
+          livIgjen = 8;
+        }
+        document.getElementById("livIgjen").innerHTML =
+          "Du har " + livIgjen + " liv igjen!";
+      }
+      window.onload = init();
+    </script>
+  </body>
+</html>
